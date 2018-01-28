@@ -22,23 +22,29 @@ struct dirent {
 /**** Violacion del segmento ****/
 int main(int argc, char *argv[]){
   DIR *direc = opendir(argv[1]);
-  dirent *dir = readdir(direc);
+  struct dirent *dir;
 
+  dir = readdir(direc);
+
+  while ((dir = readdir(direc)) != NULL) {
   if(dir->d_type == DT_REG){
-    cout << "Nombre del fichero: " << argv[1] << endl;
+    cout << "Nombre del fichero: " << dir->d_name << endl;
   }
   else if(dir->d_type == DT_DIR){
-    cout << "Nombre del directorio: " << argv[1] << "/" << endl;
+    cout << "Nombre del directorio: " << dir->d_name << "/" << endl;
   }
   else if(dir->d_type == DT_LNK){
     char *buf[100];
     size_t num;
     num = readlink(argv[1], *buf, num);
-    cout << "Link: " << argv[1] << "->" << buf << endl;
+    cout << "Link: " << dir->d_name << "->" << buf << endl;
   }
   else{
-    cout << "Nombre ejecutable: " << argv[1] << "*" << endl;
+    cout << "Nombre ejecutable: " << dir->d_name << "*" << endl;
   }
+  }
+
+  closedir(direc);
   
   return 0;
 }
